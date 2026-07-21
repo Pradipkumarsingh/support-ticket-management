@@ -1,0 +1,14 @@
+<main class="app-shell">
+  <header class="app-header">
+    <h1>Support Ticket Management</h1>
+    <nav>
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Tickets</a>
+      <a routerLink="/tickets/new" routerLinkActive="active">Create Ticket</a>
+    </nav>
+  </header>
+
+  <section class="app-content">
+    <router-outlet></router-outlet>
+  </section>
+</main>
+

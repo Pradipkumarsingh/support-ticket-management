@@ -1,0 +1,61 @@
+.ticket-create {
+  max-width: 720px;
+}
+
+.ticket-create h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select {
+  padding: 0.4rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.btn {
+  padding: 0.4rem 0.85rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #1976d2;
+  color: white;
+  border-color: #1976d2;
+}
+
+.state--error {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+@media (max-width: 640px) {
+  .form-row {
+    flex-direction: column;
+  }
+}
+

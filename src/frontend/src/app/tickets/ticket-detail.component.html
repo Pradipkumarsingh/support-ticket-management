@@ -1,0 +1,128 @@
+<section class="ticket-detail" *ngIf="ticket(); else loadingOrError">
+  <header class="ticket-detail__header">
+    <div>
+      <h2>{{ ticket()!.title }}</h2>
+      <p>Ticket #{{ ticket()!.id }}</p>
+    </div>
+    <div class="status-badge">
+      Status: <strong>{{ ticket()!.status }}</strong>
+    </div>
+  </header>
+
+  <section class="ticket-detail__body">
+    <form (ngSubmit)="saveTicket()">
+      <div class="form-field">
+        <label for="title">Title</label>
+        <input id="title" name="title" type="text" [(ngModel)]="editTitle" />
+      </div>
+
+      <div class="form-field">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          name="description"
+          rows="4"
+          [(ngModel)]="editDescription"
+        ></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-field">
+          <label for="priority">Priority</label>
+          <select id="priority" name="priority" [(ngModel)]="editPriority">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="assignee">Assignee</label>
+          <select id="assignee" name="assignee" [(ngModel)]="editAssignedToUserId">
+            <option [ngValue]="null">Unassigned</option>
+            <option *ngFor="let user of users()" [ngValue]="user.id">
+              {{ user.name }} ({{ user.role }})
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="meta">
+        <span>Created: {{ ticket()!.createdAt | date: 'short' }}</span>
+        <span>Updated: {{ ticket()!.updatedAt | date: 'short' }}</span>
+      </div>
+
+      <div *ngIf="error()" class="state state--error">
+        {{ error() }}
+      </div>
+
+      <button type="submit" class="btn btn-primary" [disabled]="loading()">
+        {{ loading() ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </form>
+
+    <section class="status-actions">
+      <h3>Status Actions</h3>
+      <p *ngIf="availableStatusTransitions().length === 0">
+        This ticket is in a final state ({{ ticket()!.status }}). No further transitions allowed.
+      </p>
+      <div *ngIf="availableStatusTransitions().length > 0" class="status-actions__buttons">
+        <button
+          *ngFor="let next of availableStatusTransitions()"
+          type="button"
+          class="btn"
+          (click)="changeStatus(next)"
+          [disabled]="loading()"
+        >
+          Set {{ next }}
+        </button>
+      </div>
+    </section>
+  </section>
+
+  <section class="ticket-detail__comments">
+    <h3>Comments</h3>
+
+    <div *ngIf="comments().length === 0" class="state state--empty">
+      No comments yet.
+    </div>
+
+    <ul class="comment-list">
+      <li *ngFor="let c of comments()">
+        <div class="comment-header">
+          <strong>{{ c.createdBy || 'User ' + c.createdByUserId }}</strong>
+          <span>{{ c.createdAt | date: 'short' }}</span>
+        </div>
+        <p>{{ c.message }}</p>
+      </li>
+    </ul>
+
+    <form class="comment-form" (ngSubmit)="addComment()">
+      <label for="new-comment">Add Comment</label>
+      <textarea
+        id="new-comment"
+        name="newComment"
+        rows="3"
+        [(ngModel)]="newComment"
+      ></textarea>
+
+      <div *ngIf="commentError()" class="state state--error">
+        {{ commentError() }}
+      </div>
+
+      <button type="submit" class="btn btn-primary" [disabled]="commentLoading()">
+        {{ commentLoading() ? 'Adding...' : 'Add Comment' }}
+      </button>
+    </form>
+  </section>
+</section>
+
+<ng-template #loadingOrError>
+  <section *ngIf="loading()" class="state state--loading">
+    Loading ticket...
+  </section>
+  <section *ngIf="!loading() && error()" class="state state--error">
+    {{ error() }}
+  </section>
+</ng-template>
+

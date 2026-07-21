@@ -1,0 +1,69 @@
+<section class="ticket-list">
+  <header class="ticket-list__header">
+    <div>
+      <h2>Tickets</h2>
+      <p>View, search, and filter support tickets.</p>
+    </div>
+    <a class="btn btn-primary" routerLink="/tickets/new">Create Ticket</a>
+  </header>
+
+  <section class="ticket-list__filters">
+    <label>
+      <span>Search</span>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        placeholder="Search by title or description"
+      />
+    </label>
+
+    <label>
+      <span>Status</span>
+      <select [(ngModel)]="statusFilter">
+        <option value="">All</option>
+        <option value="Open">Open</option>
+        <option value="InProgress">In Progress</option>
+        <option value="Resolved">Resolved</option>
+        <option value="Closed">Closed</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </label>
+
+    <button type="button" class="btn" (click)="applyFilters()">Apply</button>
+    <button type="button" class="btn btn-link" (click)="clearFilters()">Clear</button>
+  </section>
+
+  <section *ngIf="loading()" class="state state--loading">
+    Loading tickets...
+  </section>
+
+  <section *ngIf="error()" class="state state--error">
+    {{ error() }}
+  </section>
+
+  <section *ngIf="!loading() && !error() && tickets() && tickets()!.length === 0" class="state state--empty">
+    No tickets found. Try creating one.
+  </section>
+
+  <table *ngIf="!loading() && !error() && tickets() && tickets()!.length > 0" class="ticket-table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Assignee</th>
+        <th>Updated</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ticket of tickets()" [routerLink]="['/tickets', ticket.id]">
+        <td>{{ ticket.title }}</td>
+        <td>{{ ticket.priority }}</td>
+        <td>{{ ticket.status }}</td>
+        <td>{{ ticket.assignedTo || 'Unassigned' }}</td>
+        <td>{{ ticket.updatedAt | date: 'short' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+

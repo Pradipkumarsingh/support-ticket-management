@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/backend/">
+    <Project Path="src/backend/SupportTicketManagement.Api/SupportTicketManagement.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/backend/">
+    <Project Path="tests/backend/SupportTicketManagement.Tests/SupportTicketManagement.Tests.csproj" />
+  </Folder>
+</Solution>

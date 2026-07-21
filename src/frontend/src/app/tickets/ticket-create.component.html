@@ -1,0 +1,51 @@
+<section class="ticket-create">
+  <h2>Create Ticket</h2>
+
+  <form (ngSubmit)="submit()">
+    <div class="form-field">
+      <label for="title">Title</label>
+      <input id="title" name="title" type="text" [(ngModel)]="title" required />
+    </div>
+
+    <div class="form-field">
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        name="description"
+        rows="4"
+        [(ngModel)]="description"
+        required
+      ></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label for="priority">Priority</label>
+        <select id="priority" name="priority" [(ngModel)]="priority">
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label for="assignee">Assignee</label>
+        <select id="assignee" name="assignee" [(ngModel)]="assignedToUserId">
+          <option [ngValue]="null">Unassigned</option>
+          <option *ngFor="let user of users()" [ngValue]="user.id">
+            {{ user.name }} ({{ user.role }})
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="error()" class="state state--error">
+      {{ error() }}
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="loading()">
+      {{ loading() ? 'Creating...' : 'Create Ticket' }}
+    </button>
+  </form>
+</section>
+
