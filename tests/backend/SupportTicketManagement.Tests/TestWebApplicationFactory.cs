@@ -2,14 +2,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using SupportTicketManagement.Api.Data;
 
 namespace SupportTicketManagement.Tests;
 
 public class TestWebApplicationFactory : WebApplicationFactory<Program>
 {
-    protected override IHost CreateHost(IHostBuilder builder)
+    private const string DatabaseName = "SupportTicketTests";
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
 
@@ -24,10 +25,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             }
 
             services.AddDbContext<SupportTicketContext>(options =>
-                options.UseInMemoryDatabase("SupportTicketTests"));
+                options.UseInMemoryDatabase(DatabaseName));
         });
-
-        return base.CreateHost(builder);
     }
 }
-

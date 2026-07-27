@@ -18,18 +18,44 @@ public class TicketStatusIntegrationTests : IClassFixture<TestWebApplicationFact
         {
             title = "Test ticket",
             description = "Test description",
-            priority = 1,
+            priority = "Medium",
             createdByUserId = 3,
             assignedToUserId = 2
         });
 
         response.EnsureSuccessStatusCode();
 
-        var body = await response.Content.ReadFromJsonAsync<CreateTicketResponse>();
-        return body!.Id;
+        var created = await response.Content.ReadFromJsonAsync<CreateTicketResponse>();
+        return created!.Id;
     }
 
     private sealed record CreateTicketResponse(int Id);
+
+    private static readonly IReadOnlyDictionary<string, string[]> PathsToStatus =
+        new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Open"] = Array.Empty<string>(),
+            ["InProgress"] = ["InProgress"],
+            ["Resolved"] = ["InProgress", "Resolved"],
+            ["Closed"] = ["InProgress", "Resolved", "Closed"],
+            ["Cancelled"] = ["Cancelled"]
+        };
+
+    private async Task ReachStatusAsync(int ticketId, string status)
+    {
+        if (!PathsToStatus.TryGetValue(status, out var steps))
+        {
+            throw new ArgumentException($"Unknown status: {status}", nameof(status));
+        }
+
+        foreach (var step in steps)
+        {
+            var response = await _client.PostAsJsonAsync(
+                $"/api/tickets/{ticketId}/status",
+                new { newStatus = step });
+            response.EnsureSuccessStatusCode();
+        }
+    }
 
     [Theory]
     [InlineData("Open", "InProgress")]
@@ -40,12 +66,7 @@ public class TicketStatusIntegrationTests : IClassFixture<TestWebApplicationFact
     public async Task ValidTransitions_ShouldSucceed(string fromStatus, string toStatus)
     {
         var id = await CreateTicketAsync();
-
-        if (!string.Equals(fromStatus, "Open", StringComparison.OrdinalIgnoreCase))
-        {
-            var first = await _client.PostAsJsonAsync($"/api/tickets/{id}/status", new { newStatus = fromStatus });
-            first.EnsureSuccessStatusCode();
-        }
+        await ReachStatusAsync(id, fromStatus);
 
         var response = await _client.PostAsJsonAsync($"/api/tickets/{id}/status", new { newStatus = toStatus });
 
@@ -61,12 +82,7 @@ public class TicketStatusIntegrationTests : IClassFixture<TestWebApplicationFact
     public async Task InvalidTransitions_ShouldBeRejected(string fromStatus, string toStatus)
     {
         var id = await CreateTicketAsync();
-
-        if (!string.Equals(fromStatus, "Open", StringComparison.OrdinalIgnoreCase))
-        {
-            var first = await _client.PostAsJsonAsync($"/api/tickets/{id}/status", new { newStatus = fromStatus });
-            first.EnsureSuccessStatusCode();
-        }
+        await ReachStatusAsync(id, fromStatus);
 
         var response = await _client.PostAsJsonAsync($"/api/tickets/{id}/status", new { newStatus = toStatus });
 

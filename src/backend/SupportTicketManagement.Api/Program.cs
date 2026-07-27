@@ -48,6 +48,24 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+if (app.Environment.IsEnvironment("Testing"))
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<SupportTicketContext>();
+    db.Database.EnsureCreated();
+
+    if (!db.Users.Any())
+    {
+        db.Users.AddRange(
+            new SupportTicketManagement.Api.Models.User { Id = 1, Name = "Alice Admin", Email = "alice@example.com", Role = "Admin" },
+            new SupportTicketManagement.Api.Models.User { Id = 2, Name = "Bob Support", Email = "bob@example.com", Role = "Support" },
+            new SupportTicketManagement.Api.Models.User { Id = 3, Name = "Charlie User", Email = "charlie@example.com", Role = "User" },
+            new SupportTicketManagement.Api.Models.User { Id = 4, Name = "Diana Support", Email = "diana@example.com", Role = "Support" },
+            new SupportTicketManagement.Api.Models.User { Id = 5, Name = "Ethan Analyst", Email = "ethan@example.com", Role = "User" });
+        db.SaveChanges();
+    }
+}
+
 app.Run();
 
 // Expose Program class for WebApplicationFactory in tests

@@ -77,11 +77,11 @@ The Angular app reads the API base URL from `src/app/config.ts`:
 
 ```ts
 export const APP_CONFIG = {
-  apiBaseUrl: 'https://localhost:5001'
+  apiBaseUrl: 'https://localhost:7093'
 };
 ```
 
-Update `apiBaseUrl` to match your backend API URL (e.g., `https://localhost:5001` or `http://localhost:5084`).
+Update `apiBaseUrl` to match your backend launch profile (HTTPS `https://localhost:7093` or HTTP `http://localhost:5155` from `launchSettings.json`).
 
 4. **Run the Angular Dev Server**
 

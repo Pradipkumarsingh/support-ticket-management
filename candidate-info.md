@@ -1,14 +1,14 @@
 # Candidate Information
 
-Name: _Your Name Here_  
+Name: Pradip Kumar Singh  
 Role: Software Engineer  
 Primary Technology Stack: .NET, Angular
 
 Primary AI Tool Used: Cursor  
 Project Option Selected: Option 1 – Backend-Heavy Support Ticket Management System
 
-Assessment Start Date: _Fill in start date_  
-Submission Date: _Fill in submission date_
+Assessment Start Date: 2026-03-20  
+Submission Date: 2026-03-27
 
 ## Project Summary
 
@@ -25,6 +25,6 @@ Built a small full-stack support ticket management system with a .NET 8 Web API 
 ## Setup Summary
 
 - Backend runs from `src/backend/SupportTicketManagement.Api` with a SQL Server database configured via `appsettings.json`.
-- Frontend runs from `src/frontend` using Angular 19 and calls the backend REST API.
+- Frontend runs from `src/frontend` using Angular 19 and calls the backend REST API (`https://localhost:7093` per `src/app/config.ts`).
 - Database schema and seed scripts are under `database/`, with setup instructions in `database/setup-notes.md`.
-
+- Backend integration tests: `dotnet test tests/backend/SupportTicketManagement.Tests/SupportTicketManagement.Tests.csproj`.
